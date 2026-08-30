@@ -231,6 +231,11 @@ canvas#fw{position:fixed;inset:0;pointer-events:none;z-index:90;display:none}
 .rec .dt{color:var(--muted);font-weight:400;font-size:12.5px}
 .rec .tx{font-size:13.5px;line-height:1.75;margin-top:7px;background:#F7FBFD;border-radius:10px;padding:10px}
 .rec .mt{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-top:6px}
+.footer{max-width:1180px;margin:26px auto 0;padding:14px 12px 0;border-top:2px solid var(--line);
+  text-align:center;font-size:11.5px;color:var(--muted);letter-spacing:.02em}
+.footer a{color:inherit;text-decoration:none;font-weight:inherit;font-size:inherit}
+.footer a:hover{text-decoration:underline}
+@media print{.footer{display:none!important}}
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--navy);color:#fff;padding:11px 18px;border-radius:999px;font-weight:700;z-index:95;opacity:0;transition:.25s;pointer-events:none;font-size:14px;max-width:90vw;text-align:center}
 .toast.on{opacity:1;bottom:34px}
 </style>
@@ -395,6 +400,9 @@ canvas#fw{position:fixed;inset:0;pointer-events:none;z-index:90;display:none}
     <div id="recList"></div>
   </div>
 </section>
+
+<div class="footer">© 2026 특수한 노션쌤 · 슬기로운 마트 계산<br>
+  <a href="https://blog.naver.com/notionssam" target="_blank" rel="noopener">blog.naver.com/notionssam</a></div>
 </div>
 
 <!-- 상품 관리 -->
@@ -1086,7 +1094,8 @@ function showReceipt(){
     '<div class="tot">'+line("총 결제금액",money(cost)+"원")+'</div>'+
     '<div class="sec">'+line("받은 금액",money(paid)+"원")+line("거스름돈",money(paid-cost)+"원")+'</div>'+
     '<div class="thx">감사합니다 ❤️</div>'+
-    '<div style="text-align:center;font-size:10px;margin-top:6px">또 오세요!</div>';
+    '<div style="text-align:center;font-size:10px;margin-top:6px">또 오세요!</div>'+
+    '<div style="text-align:center;font-size:9px;margin-top:8px;border-top:1px dashed #999;padding-top:6px;line-height:1.5">© 2026 특수한 노션쌤<br>blog.naver.com/notionssam</div>';
   document.getElementById("rcBtns").innerHTML=roundButtons();
   document.getElementById("rcMask").classList.add("on");
   fireworks();clap();
