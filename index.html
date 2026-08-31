@@ -14,12 +14,13 @@
   --mono:'Nanum Gothic Coding',monospace;
 }
 *{box-sizing:border-box}
-html,body{overflow-x:hidden}
+html,body{overflow-x:hidden;max-width:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%}
 button{font-family:var(--body);cursor:pointer;border:none}
 h1,h2,h3,.display{font-family:var(--display);font-weight:400;letter-spacing:-.01em}
 :focus-visible{outline:3px solid var(--yellow);outline-offset:2px}
 
+.topbar-x{}
 .topbar{position:sticky;top:0;z-index:40;background:var(--navy);color:#fff;display:flex;align-items:center;gap:8px;padding:9px 12px;flex-wrap:wrap}
 .logo{font-family:var(--display);font-size:clamp(16px,4.4vw,21px);display:flex;align-items:center;gap:7px}
 .logo .dot{width:11px;height:11px;border-radius:50%;background:var(--yellow);box-shadow:0 0 0 4px rgba(255,201,60,.25)}
@@ -36,7 +37,7 @@ h1,h2,h3,.display{font-family:var(--display);font-weight:400;letter-spacing:-.01
 .step:active{transform:translateY(1px)}
 .step.done{background:#D9F2E6;color:var(--green-d)}
 
-.wrap{max-width:1180px;margin:0 auto;padding:16px 12px 80px}
+.wrap{width:100%;max-width:1560px;margin:0 auto;padding:14px 16px 80px}
 .screen{display:none}
 .screen.on{display:block;animation:fade .3s}
 @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
@@ -69,21 +70,21 @@ h1,h2,h3,.display{font-family:var(--display);font-weight:400;letter-spacing:-.01
 .reco{background:#FFF7DF;border:2px solid var(--yellow);border-radius:14px;padding:12px 14px;margin-bottom:12px;font-size:14px;line-height:1.7}
 
 /* 슬롯 */
-.machine{background:linear-gradient(180deg,#1B4E77,#0E2E48);border-radius:22px;padding:14px;border:5px solid var(--navy);box-shadow:inset 0 0 0 3px rgba(255,255,255,.08)}
+.machine{background:linear-gradient(180deg,#1B4E77,#0E2E48);border-radius:22px;padding:12px;display:flex;flex-direction:column;border:5px solid var(--navy);box-shadow:inset 0 0 0 3px rgba(255,255,255,.08)}
 .marquee{display:flex;justify-content:center;gap:6px;margin-bottom:10px}
 .bulb{width:9px;height:9px;border-radius:50%;background:var(--yellow);animation:blink 1.1s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
-.reels{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:8px;background:#08202F;border-radius:14px;padding:8px}
+.reels{display:grid;grid-template-columns:repeat(auto-fit,minmax(var(--reelW,104px),1fr));gap:8px;background:#08202F;border-radius:14px;padding:8px;align-content:center;flex:1 1 auto;min-height:0;overflow:hidden}
 @media(max-width:520px){.reels{grid-template-columns:repeat(auto-fit,minmax(84px,1fr));gap:6px}}
 .big.spinning{background:var(--yellow)!important;color:#5A3B00!important;box-shadow:0 5px 0 #C08F00!important;animation:shake .18s infinite}
 @keyframes shake{0%,100%{transform:translateX(-2px)}50%{transform:translateX(2px)}}
 .reel.stop{animation:bump .34s cubic-bezier(.3,1.6,.5,1)}
 @keyframes bump{0%{transform:translateY(-7px)}55%{transform:translateY(4px)}100%{transform:none}}
-.reel{height:132px;background:#fff;border-radius:12px;overflow:hidden;position:relative;border:3px solid var(--yellow)}
-@media(max-width:520px){.reel{height:112px}}
+.reel{height:var(--reelH,132px);background:#fff;border-radius:12px;overflow:hidden;position:relative;border:3px solid var(--yellow)}
+
 .strip{position:absolute;left:0;top:0;width:100%}
-.slotitem{height:132px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:4px}
-@media(max-width:520px){.slotitem{height:112px}}
+.slotitem{height:var(--reelH,132px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:4px}
+
 .slotitem .em{font-size:34px;line-height:1}
 .slotitem img{width:48px;height:48px;object-fit:cover;border-radius:8px}
 .slotitem .nm{font-size:11px;font-weight:700;text-align:center;line-height:1.2}
@@ -94,14 +95,14 @@ h1,h2,h3,.display{font-family:var(--display);font-weight:400;letter-spacing:-.01
 .chip.on{background:var(--yellow);border-color:var(--yellow);color:#5A3B00}
 
 /* 스캔 */
-.scanlay{display:grid;grid-template-columns:1.05fr .95fr;gap:14px;align-items:start}
+.scanlay{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:14px;align-items:start}
 @media(max-width:900px){.scanlay{grid-template-columns:1fr}}
 .gun{display:flex;gap:10px;align-items:center;background:#08202F;color:#fff;border-radius:16px;padding:12px;margin-bottom:12px}
 .laser{flex:1;height:40px;border-radius:10px;background:repeating-linear-gradient(90deg,#0B2B3E 0 8px,#0E3550 8px 16px);position:relative;overflow:hidden}
 .laser::after{content:"";position:absolute;top:0;bottom:0;width:4px;background:var(--red);box-shadow:0 0 14px 4px rgba(255,90,95,.8);animation:sweep 1.8s linear infinite}
 @keyframes sweep{0%{left:-4px}100%{left:100%}}
 .gun .lbl{font-size:11.5px;color:#9FC0D6;font-weight:700}
-.cardgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:9px}
+.cardgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(116px,1fr));gap:8px;align-content:start}
 .pcard{background:#fff;border:2px dashed var(--line);border-radius:14px;padding:9px;text-align:center;position:relative}
 .pcard.part{border-color:var(--yellow);background:#FFFCF2}
 .pcard.done{border:2px solid var(--green);background:#F1FBF6}
@@ -112,6 +113,9 @@ h1,h2,h3,.display{font-family:var(--display);font-weight:400;letter-spacing:-.01
 .pcard .code{font-family:var(--mono);font-size:9.5px;color:var(--muted)}
 .pcard .tap{margin-top:6px;width:100%;background:var(--navy);color:#fff;border-radius:9px;padding:7px;font-size:12px;font-weight:700}
 .pcard .tap:disabled{background:#B9C8D2}
+.pcard.hit{animation:hit .7s}
+@keyframes hit{0%{transform:scale(1);box-shadow:0 0 0 0 rgba(30,158,106,.6)}
+  35%{transform:scale(1.09);box-shadow:0 0 0 10px rgba(30,158,106,0)}100%{transform:scale(1)}}
 .pcard .ok{position:absolute;top:-9px;right:-9px;background:var(--green);color:#fff;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:15px}
 
 .pos{background:#fff;border:2px solid var(--line);border-radius:16px;overflow:hidden}
@@ -127,11 +131,14 @@ h1,h2,h3,.display{font-family:var(--display);font-weight:400;letter-spacing:-.01
 .empty{color:var(--muted);text-align:center;padding:22px 8px;font-family:var(--body);font-size:13.5px}
 
 /* 금액 입력 */
-.amtlay{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.amtlay{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+.amtlay>*{min-width:0;max-width:100%}
+.scanlay>*{min-width:0;max-width:100%}
+.money,.keypad{max-width:100%}
 @media(max-width:900px){.amtlay{grid-template-columns:1fr}}
-.amtbox{background:var(--navy);color:#fff;border-radius:16px;padding:14px;text-align:right}
+.amtbox{background:var(--navy);color:#fff;border-radius:16px;padding:12px 14px;text-align:right}
 .amtbox .cap{font-size:12.5px;color:#9FC0D6;text-align:left;font-weight:700}
-.amtbox .val{font-family:var(--mono);font-size:clamp(28px,8vw,38px);font-weight:700;margin-top:4px;word-break:break-all}
+.amtbox .val{font-family:var(--mono);font-size:clamp(26px,7vw,34px);font-weight:700;margin-top:2px;word-break:break-all}
 .money{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:10px}
 .bill{background:#fff;border:2px solid var(--line);border-radius:12px;padding:7px 5px 6px;
   box-shadow:0 3px 0 rgba(18,59,92,.14);display:flex;align-items:center;gap:6px;overflow:hidden}
@@ -145,20 +152,45 @@ h1,h2,h3,.display{font-family:var(--display);font-weight:400;letter-spacing:-.01
 .key{background:#fff;border:2px solid var(--line);border-radius:12px;padding:clamp(12px,3.4vw,15px);font-size:clamp(17px,4.6vw,20px);font-weight:700;font-family:var(--mono)}
 .key:active{background:var(--yellow)}
 .key.fn{background:#F0F5F9;font-size:14px;font-family:var(--body)}
-.billbag{display:flex;flex-wrap:wrap;gap:5px;align-items:center;margin-top:8px;min-height:46px;
-  background:#F4F9FC;border:2px dashed var(--line);border-radius:12px;padding:7px}
-.bagimg{height:26px;width:auto;border-radius:3px;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .1s}
+.billbag{margin-top:8px;height:132px;width:100%;max-width:100%;box-sizing:border-box;display:flex;flex-direction:column;
+  background:#F4F9FC;border:2px dashed var(--line);border-radius:12px;padding:7px;overflow:hidden}
+.bagimg{height:24px;width:auto;border-radius:3px;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .1s}
 .bagimg:hover{transform:translateY(-2px)}
 .bagimg.coin{height:26px;border-radius:50%}
-.billbag{display:block}
-.bagrow{display:flex;flex-wrap:wrap;gap:5px;align-items:center;min-height:30px}
-.bagsum{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px;padding-top:7px;border-top:1px dashed var(--line)}
+.bagrow{display:flex;flex-wrap:wrap;gap:4px;overflow-x:hidden;max-width:100%;align-items:flex-start;align-content:flex-start;flex:1;overflow-y:auto;min-height:0}
+.bagsum{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px;padding-top:6px;border-top:1px dashed var(--line);max-height:52px;overflow-y:auto;flex:0 0 auto}
 .bagcnt{display:flex;align-items:center;gap:5px;font-family:var(--mono);font-size:12.5px;color:var(--navy);
   background:#fff;border:2px solid var(--line);border-radius:999px;padding:3px 10px 3px 4px}
 .bagcnt b{color:var(--green-d)}
 .bagmini{height:17px;width:auto;border-radius:2px}
 .bagmini.coin{border-radius:50%}
-.bagempty{color:var(--muted);font-size:12.5px}
+.bagempty{color:var(--muted);font-size:12.5px;margin:auto;text-align:center;width:100%}
+.cartrow{display:flex;align-items:center;gap:8px;padding:7px 4px;border-bottom:1px dashed var(--line);font-family:var(--body)}
+.cartrow .chk{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:14px;font-weight:700;
+  background:#EEF3F7;color:#B3C4D0;flex:0 0 24px}
+.cartrow .chk.done{background:var(--green);color:#fff}
+.cartrow .chk.now2{background:var(--yellow);color:#8A5A00;animation:blink 1.2s infinite}
+.cartrow .eq2.nowb{background:#FFE9A8;color:#8A5A00}
+.cartrow .ic{font-size:22px;width:28px;text-align:center}
+.cartrow img{width:26px;height:26px;object-fit:cover;border-radius:5px}
+.cartrow .nm2{flex:1;font-weight:700;font-size:14px}
+.cartrow .pr2{font-family:var(--mono);font-size:13.5px}
+.cartrow .eq2{font-family:var(--mono);font-size:13.5px;font-weight:700;color:var(--green-d);background:#E7F7EF;border-radius:999px;padding:2px 9px}
+.cartrow.now{background:#FFF7DF;border-radius:10px;border-bottom-color:transparent}
+.cartrow.wait{opacity:.45}
+.valrow{display:flex;align-items:center;gap:10px;justify-content:flex-end}
+.valrow .val{flex:1}
+.okbtn{background:var(--green);color:#fff;border-radius:14px;padding:10px 14px;font-family:var(--display);
+  font-size:22px;line-height:1;box-shadow:0 4px 0 var(--green-d);display:flex;align-items:center;justify-content:center;gap:7px;white-space:nowrap}
+.okbtn span{font-size:12.5px;line-height:1.25;text-align:center}
+.okbtn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--green-d)}
+.accbox{background:#E7F7EF;border:2px solid var(--green);border-radius:14px;padding:9px 12px}
+.accbox .hd2{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.accbox .t{font-size:12.5px;color:var(--green-d);font-weight:700}
+.accbox .n{font-family:var(--mono);font-size:22px;font-weight:700;color:var(--green-d)}
+.accbag{display:flex;flex-wrap:wrap;gap:3px;margin-top:6px;max-height:46px;overflow-y:auto}
+.accbag img{height:18px;width:auto;border-radius:2px}
+.accbag img.coin{border-radius:50%}
 .scene{margin-top:12px;background:#F4F9FC;border:2px solid var(--line);border-radius:14px;padding:6px}
 .scene svg{width:100%;height:auto;display:block}
 .hintbox{background:#FFF7DF;border:2px solid var(--yellow);border-radius:14px;padding:11px 13px;margin-top:11px;font-size:13.5px;line-height:1.7}
@@ -169,12 +201,25 @@ h1,h2,h3,.display{font-family:var(--display);font-weight:400;letter-spacing:-.01
 .eq .rule{border-top:3px solid var(--navy);margin-top:6px;padding-top:8px}
 
 /* 계산기 */
-.calc{background:#20313B;border-radius:18px;padding:12px;color:#fff}
-.calc .hist{font-family:var(--mono);font-size:12.5px;color:#9FC0D6;text-align:right;
-  padding:0 4px 5px;min-height:18px;word-break:break-all}
-.calc .disp{background:#C8E6C9;color:#12242F;border-radius:10px;padding:12px;text-align:right;font-family:var(--mono);font-size:clamp(22px,6vw,28px);min-height:56px;word-break:break-all;border:3px solid #0F1D24}
-.calc .keys{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:9px}
-.calc button{background:#3B4E5A;color:#fff;border-radius:10px;padding:13px 0;font-size:17px;font-family:var(--mono);font-weight:700}
+.calcdock{position:fixed;right:18px;bottom:76px;z-index:60}
+.calcdock[hidden]{display:none}
+.calctab svg{display:block}
+.calctab{cursor:grab;touch-action:none;user-select:none;background:#20313B;color:#fff;
+  width:58px;height:58px;border-radius:50%;font-size:26px;line-height:1;display:grid;place-items:center;
+  box-shadow:0 5px 14px rgba(0,0,0,.32)}
+.calctab.on{background:var(--green);box-shadow:0 5px 14px rgba(30,158,106,.5)}
+.calcdock.dragging .calctab{cursor:grabbing;transform:scale(1.06)}
+.calcpanel{display:none;position:fixed;width:236px;z-index:61;
+  box-shadow:0 10px 28px rgba(0,0,0,.34);border-radius:14px}
+.calcpanel.open{display:block;animation:slidein .22s cubic-bezier(.2,.8,.3,1)}
+@keyframes slidein{from{transform:translateY(10px);opacity:0}to{transform:none;opacity:1}}
+@media(max-width:900px){.calcpanel{width:206px}.calcdock{right:12px;bottom:20px}}
+.calc{background:#20313B;border-radius:14px;padding:9px;color:#fff;margin-top:7px}
+.calc .hist{font-family:var(--mono);font-size:11px;color:#9FC0D6;text-align:right;
+  padding:0 3px 3px;min-height:15px;word-break:break-all}
+.calc .disp{background:#C8E6C9;color:#12242F;border-radius:8px;padding:8px 10px;text-align:right;font-family:var(--mono);font-size:clamp(17px,4.6vw,21px);min-height:38px;word-break:break-all;border:2px solid #0F1D24}
+.calc .keys{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:7px}
+.calc button{background:#3B4E5A;color:#fff;border-radius:8px;padding:9px 0;font-size:15px;font-family:var(--mono);font-weight:700}
 .calc button.op{background:var(--navy-l)}.calc button.eqk{background:var(--green)}.calc button.cl{background:var(--red)}
 .calc button:active{filter:brightness(1.25)}
 
@@ -250,11 +295,41 @@ canvas#fw{position:fixed;inset:0;pointer-events:none;z-index:90;display:none}
 .rec .dt{color:var(--muted);font-weight:400;font-size:12.5px}
 .rec .tx{font-size:13.5px;line-height:1.75;margin-top:7px;background:#F7FBFD;border-radius:10px;padding:10px}
 .rec .mt{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-top:6px}
-.footer{max-width:1180px;margin:26px auto 0;padding:14px 12px 0;border-top:2px solid var(--line);
+.footer{width:100%;max-width:1560px;margin:26px auto 0;align-self:center;position:relative;z-index:1;padding:14px 12px 0;border-top:2px solid var(--line);
   text-align:center;font-size:11.5px;color:var(--muted);letter-spacing:.02em}
 .footer a{color:inherit;text-decoration:none;font-weight:inherit;font-size:inherit}
 .footer a:hover{text-decoration:underline}
 @media print{.footer{display:none!important}}
+/* 데스크톱·태블릿: 스크롤 없는 한 화면 */
+@media(min-width:901px){
+  html,body{height:100%;overflow:hidden}
+  body{display:flex;flex-direction:column}
+  .topbar,.steps,.footer{flex:0 0 auto}
+  .wrap{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;padding:12px 18px 4px;overflow:hidden}
+  .screen{flex:1 1 auto;min-height:0}
+  .screen.on{display:flex;flex-direction:column}
+  .amtlay,.scanlay{flex:1 1 auto;min-height:0;align-items:stretch}
+  .amtlay>*,.scanlay>*{min-height:0;min-width:0;overflow:auto}
+  .screen.on>.card{flex:1 1 auto;min-height:0;overflow:auto}
+  .flexcard{display:flex!important;flex-direction:column;overflow:hidden!important}
+  .flexcard .grow{flex:1 1 auto;min-height:0;overflow:auto;max-height:none}
+  .flexcard .fixed{flex:0 0 auto}
+  .scene svg{max-height:120px}
+  .footer{margin:0;padding:6px 0 8px}
+  .poslist{max-height:none}
+  .pos{display:flex;flex-direction:column;max-height:100%}
+  .pos .poslist{flex:1 1 auto;min-height:0}
+  .amtlay>div:last-child{display:flex;flex-direction:column;overflow:hidden}
+  .amtlay>div:last-child>div[id$="Pad"]{flex:1 1 auto;min-height:0;display:flex;flex-direction:column}
+  .amtlay .billbag{flex:1 1 auto;height:auto;min-height:120px}
+  .amtlay .money,.amtlay .keypad{flex:0 0 auto}
+  .amtlay .bill{padding:12px 6px}
+  .amtlay .bill .pic{flex:0 0 54px;height:40px}
+  .amtlay .bill .pic img{width:54px;height:40px}
+  .amtlay .bill .cap2{font-size:15px}
+  .amtlay .big[data-k="ok"]{margin-top:auto;flex:0 0 auto}
+  .amtlay .bagrow{align-content:flex-start}
+}
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--navy);color:#fff;padding:11px 18px;border-radius:999px;font-weight:700;z-index:95;opacity:0;transition:.25s;pointer-events:none;font-size:14px;max-width:90vw;text-align:center}
 .toast.on{opacity:1;bottom:34px}
 </style>
@@ -298,18 +373,18 @@ canvas#fw{position:fixed;inset:0;pointer-events:none;z-index:90;display:none}
 
 <!-- 1. 슬롯 -->
 <section class="screen" id="s-slot">
-  <div class="card">
-    <h1 class="title">오늘 살 물건 뽑기</h1>
-    <p class="sub">물건 종류와 수량을 정한 뒤 손잡이를 당기세요. 수량이 2개면 그 카드를 두 번 찍어야 해요.</p>
-    <div class="optrow" id="countrow"></div>
-    <div class="optrow" id="qtyrow"></div>
-    <div style="height:10px"></div>
-    <div class="machine">
+  <div class="card flexcard">
+    <h1 class="title fixed">오늘 살 물건 뽑기</h1>
+    <p class="sub fixed">물건 종류와 수량을 정한 뒤 손잡이를 당기세요. 수량이 2개면 그 카드를 두 번 찍어야 해요.</p>
+    <div class="optrow fixed" id="countrow"></div>
+    <div class="optrow fixed" id="qtyrow"></div>
+    <div style="height:10px" class="fixed"></div>
+    <div class="machine grow">
       <div class="marquee" id="marquee"></div>
       <div class="reels" id="reels"></div>
     </div>
-    <button class="big" id="spinBtn" onclick="spin()">손잡이 당기기 🕹️</button>
-    <button class="big alt" id="toScan" style="display:none" onclick="runNext()">계산대로 가져가기 →</button>
+    <button class="big fixed" id="spinBtn" onclick="spin()">손잡이 당기기 🕹️</button>
+    <button class="big alt fixed" id="toScan" style="display:none" onclick="runNext()">다음 (어림하기) →</button>
   </div>
 </section>
 
@@ -324,11 +399,11 @@ canvas#fw{position:fixed;inset:0;pointer-events:none;z-index:90;display:none}
     <div style="text-align:right"><div class="lbl">스캔</div><div style="font-family:var(--mono);font-size:22px" id="scanCount">0/0</div></div>
   </div>
   <div class="scanlay">
-    <div class="card">
-      <h2 class="title" style="font-size:20px">계산할 물건</h2>
-      <p class="sub">종이 카드가 없으면 아래 카드를 눌러도 스캔돼요.</p>
-      <div class="cardgrid" id="scanCards"></div>
-      <button class="big" id="doneScan" disabled onclick="finishScan()">스캔 끝! 계산하러 가기 →</button>
+    <div class="card flexcard">
+      <h2 class="title fixed" style="font-size:20px">계산할 물건</h2>
+      <p class="sub fixed">종이 카드가 없으면 아래 카드를 눌러도 스캔돼요.</p>
+      <div class="cardgrid grow" id="scanCards"></div>
+      <button class="big fixed" id="doneScan" disabled onclick="finishScan()">스캔 끝! 계산하러 가기 →</button>
     </div>
     <div class="pos">
       <h3><span>영수증 미리보기</span><span id="posTime"></span></h3>
@@ -341,15 +416,20 @@ canvas#fw{position:fixed;inset:0;pointer-events:none;z-index:90;display:none}
 <!-- 3. 어림 -->
 <section class="screen" id="s-est">
   <div class="amtlay">
-    <div class="card">
-      <h1 class="title">얼마쯤 낼까? (어림하기)</h1>
+    <div class="card flexcard">
+      <h1 class="title fixed">얼마쯤 낼까? (어림하기)</h1>
       <div class="optrow" id="estUnitRow"></div>
       <p class="sub" id="estGuide"></p>
-      <div class="poslist" id="estList" style="border:2px solid var(--line);border-radius:12px"></div>
-      <div class="scene" id="sceneEst"></div>
+      <div class="poslist grow" id="estList" style="border:2px solid var(--line);border-radius:12px"></div>
+      <div class="scene fixed" id="sceneEst"></div>
     </div>
     <div>
-      <div class="amtbox"><div class="cap">내가 낼 돈 (어림값)</div><div class="val" id="estVal">0</div></div>
+      <div id="estAccBox"></div>
+      <div class="amtbox" style="margin-top:10px">
+        <div class="cap" id="estCap">이 물건의 어림값</div>
+        <div class="valrow"><div class="val" id="estVal">0</div>
+        <button class="okbtn" onclick="pads.est.submit()">✓<span>어림하기<br>완료</span></button></div>
+      </div>
       <div id="estPad"></div>
     </div>
   </div>
@@ -358,16 +438,16 @@ canvas#fw{position:fixed;inset:0;pointer-events:none;z-index:90;display:none}
 <!-- 4. 물건값 -->
 <section class="screen" id="s-exact">
   <div class="amtlay">
-    <div class="card">
-      <h1 class="title">물건값 계산하기</h1>
-      <p class="sub">계산기로 물건값을 모두 더해서 정확한 금액을 구해 보세요.</p>
-      <div class="poslist" id="exactList" style="border:2px solid var(--line);border-radius:12px"></div>
-      <div class="scene" id="sceneExact"></div>
+    <div class="card flexcard">
+      <h1 class="title fixed">물건값 계산하기</h1>
+      <p class="sub fixed">계산기로 물건값을 모두 더해서 정확한 금액을 구해 보세요.</p>
+      <div class="poslist grow" id="exactList" style="border:2px solid var(--line);border-radius:12px"></div>
+      <div class="scene fixed" id="sceneExact"></div>
     </div>
     <div>
-      <div class="calc"><div class="disp" id="cDisp">0</div><div class="keys" id="cKeys"></div></div>
-      <div class="amtbox" style="margin-top:12px"><div class="cap">물건값 (정확한 금액)</div><div class="val" id="exactVal">0</div></div>
+      <div class="amtbox"><div class="cap">물건값 (정확한 금액)</div><div class="val" id="exactVal">0</div></div>
       <div id="exactPad"></div>
+
     </div>
   </div>
 </section>
@@ -375,16 +455,15 @@ canvas#fw{position:fixed;inset:0;pointer-events:none;z-index:90;display:none}
 <!-- 5. 거스름돈 -->
 <section class="screen" id="s-change">
   <div class="amtlay">
-    <div class="card">
-      <h1 class="title">거스름돈 구하기</h1>
+    <div class="card flexcard">
+      <h1 class="title fixed">거스름돈 구하기</h1>
       <p class="sub">낸 돈에서 물건값을 빼면 거스름돈이에요.</p>
       <div class="eq">
         <div class="r"><span>낸 돈</span><span><b id="cgPaid">0</b> 원</span></div>
         <div class="r"><span>− 물건값</span><span><b id="cgCost">0</b> 원</span></div>
         <div class="r rule"><span>거스름돈</span><span><b>?</b> 원</span></div>
       </div>
-      <div class="scene" id="sceneChange"></div>
-      <div class="calc" style="margin-top:12px"><div class="disp" id="cDisp2">0</div><div class="keys" id="cKeys2"></div></div>
+      <div class="scene grow" id="sceneChange"></div>
     </div>
     <div>
       <div class="amtbox"><div class="cap">받아야 할 거스름돈</div><div class="val" id="cgVal">0</div></div>
@@ -423,9 +502,9 @@ canvas#fw{position:fixed;inset:0;pointer-events:none;z-index:90;display:none}
   </div>
 </section>
 
+</div>
 <div class="footer">© 2026 특수한 노션쌤 · 슬기로운 마트 계산<br>
   <a href="https://blog.naver.com/notionssam" target="_blank" rel="noopener">blog.naver.com/notionssam</a></div>
-</div>
 
 <!-- 상품 관리 -->
 <div class="mask" id="adminMask"><div class="pop" style="max-width:900px;text-align:left">
@@ -495,6 +574,19 @@ canvas#fw{position:fixed;inset:0;pointer-events:none;z-index:90;display:none}
   <div class="btnrow"><button style="background:#8FA6B4" onclick="document.getElementById('pinMask').classList.remove('on')">닫기</button><button onclick="checkPin()">확인</button></div>
 </div></div>
 
+<div class="calcpanel" id="calcPanel"><div class="calc"><div class="disp" id="cDisp">0</div><div class="keys" id="cKeys"></div></div></div>
+<div class="calcdock" id="calcDock" hidden>
+  <button class="calctab" id="calcTab" onclick="toggleCalc()" title="계산기 (끌어서 옮기기)" aria-label="계산기">
+    <svg viewBox="0 0 24 24" width="27" height="27" aria-hidden="true">
+      <rect x="4" y="2.5" width="16" height="19" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/>
+      <rect x="7" y="5.5" width="10" height="4" rx="1.2" fill="currentColor"/>
+      <circle cx="8.4" cy="13" r="1.25" fill="currentColor"/><circle cx="12" cy="13" r="1.25" fill="currentColor"/>
+      <circle cx="15.6" cy="13" r="1.25" fill="currentColor"/>
+      <circle cx="8.4" cy="17.2" r="1.25" fill="currentColor"/><circle cx="12" cy="17.2" r="1.25" fill="currentColor"/>
+      <rect x="14.35" y="15.95" width="2.5" height="4.5" rx="1.25" fill="currentColor"/>
+    </svg></button>
+</div>
+
 <canvas id="fw"></canvas>
 <div class="toast" id="toast"></div>
 
@@ -514,7 +606,20 @@ const BASE=[
  ["쌀 5kg","🍚",21000],["두루마리 휴지","🧻",6800],["비누","🧼",1900],["칫솔","🪥",2700],
  ["치약","🦷",3300],["샴푸","🧴",8500],["세제","🧽",7200],["연필","✏️",500],
  ["공책","📒",1200],["지우개","🧩",400],["색연필","🖍️",4600],["가위","✂️",2300],
- ["빗","🪮",1000],["양말","🧦",2000],["모자","🧢",7500],["우산","☂️",5900]
+ ["빗","🪮",1000],["양말","🧦",2000],["모자","🧢",7500],["우산","☂️",5900],
+ ["삼겹살 300g","🥓",8900],["닭다리살 500g","🍖",6900],["삼각김밥","🍘",1500],["즉석밥 3개","🍚",4500],
+ ["라면 5개입","🍜",4900],["스팸 200g","🥫",4300],["참치캔 3개","🐟",6900],["포기김치 1kg","🥬",12900],
+ ["두부","⬜",2500],["콩나물","🌱",1900],["시금치","🥬",3500],["애호박","🥒",2200],
+ ["파프리카","🫑",2900],["브로콜리","🥦",3200],["고구마 1kg","🍠",5900],["양배추","🥬",4500],
+ ["대파 한 단","🌿",3900],["깐마늘 500g","🧄",6500],["생강","🫚",2800],["레몬 3개","🍋",4200],
+ ["키위 5개","🥝",6900],["블루베리","🫐",8900],["망고","🥭",6500],["참외 3개","🍈",8900],
+ ["복숭아 4개","🍑",12000],["배 2개","🍐",9800],["단감 5개","🟠",7500],["밤 500g","🌰",6900],
+ ["견과류 믹스","🥜",9900],["시리얼","🥣",5900],["딸기잼","🍯",4900],["버터","🧈",6900],
+ ["생크림","🥛",3900],["요거트 4개","🍨",4800],["맥주 6캔","🍺",12900],["탄산수 6개","🫧",4900],
+ ["이온음료","🥤",1900],["컵과일","🍧",3900],["냉동만두","🥟",7900],["소보로빵","🥐",2500],
+ ["초코우유","🍫",1600],["캔커피","🥫",1800],["종이컵 100개","🥤",4900],["위생장갑","🧤",2900],
+ ["물티슈","🧻",3900],["마스크 30매","😷",8900],["건전지 4개","🔋",5900],["볼펜","🖊️",1200],
+ ["형광펜","🖍️",1500],["테이프","📎",1900]
 ];
 let products=[];
 function makeProducts(){
@@ -553,33 +658,66 @@ const save=()=>sset("mart:products",products);
 let cart=[],screen="name",paid=0,cost=0,slotCount=5,qtyMode=1,student="",startTime=0;
 let stat={scanDup:0,scanUnknown:0,estTry:0,exactTry:0,changeTry:0,estGaps:[],exactGaps:[],changeGaps:[]};
 const money=n=>n.toLocaleString("ko-KR");
-let estUnit=1000;
-const roundUp=n=>Math.ceil(n/estUnit)*estUnit;
+let estUnit=1000,estIdx=0,estAcc=0,estBag=[];
+const baseUnit=()=>typeof estUnit==="number"?estUnit:1000;
+const okUnits=()=>estUnit==="free"?(level==="adv"?[10,100,500,1000]:[100,500,1000]):[estUnit];
+const estCandidates=line=>okUnits().map(u=>Math.ceil(line/u)*u);
+const roundUp=n=>Math.ceil(n/baseUnit())*baseUnit();
+let estPaidPer=[];
+function initEst(){estIdx=0;estAcc=0;estBag=[];estPaidPer=[];renderEstStage();}
+function renderEstStage(){
+  const list=document.getElementById("estList");
+  list.innerHTML=cart.map((c,i)=>{
+    const cls=i<estIdx?"":(i===estIdx?" now":" wait");
+    const pic=c.img?'<img src="'+c.img+'">':'<span class="ic">'+c.emoji+'</span>';
+    const mark=i<estIdx?'<span class="chk done">✓</span>':(i===estIdx?'<span class="chk now2">●</span>':'<span class="chk">○</span>');
+    return '<div class="cartrow'+cls+'">'+mark+pic+'<span class="nm2">'+c.name+(c.qty>1?' <small>'+c.qty+'개</small>':'')+'</span>'+
+      (i<=estIdx?'<span class="pr2">'+money(c.price*c.qty)+'원</span>':'<span class="pr2">·····</span>')+
+      (i<estIdx?'<span class="eq2">→ '+money(estPaidPer[i]!==undefined?estPaidPer[i]:roundUp(c.price*c.qty))+'원</span>':(i===estIdx?'<span class="eq2 nowb">지금 담는 중</span>':""))+
+      '</div>';
+  }).join("");
+  const cnt={};estBag.forEach(b=>cnt[b]=(cnt[b]||0)+1);
+  document.getElementById("estAccBox").innerHTML=
+    '<div class="accbox"><div class="hd2"><span class="t">🛒 지금까지 낸 돈 ('+Math.min(estIdx,cart.length)+'/'+cart.length+')</span>'+
+    '<span class="n">'+money(estAcc)+'원</span></div>'+
+    (estBag.length?'<div class="accbag">'+estBag.map(b=>'<img class="'+(b<=500?"coin":"")+'" src="'+MONEY_IMG[b]+'" alt="">').join("")+'</div>':"")+'</div>';
+  const it=cart[estIdx];
+  document.getElementById("estCap").textContent=it?it.name+"의 어림값":"모두 담았어요";
+  const now=list.querySelector(".cartrow.now");
+  if(now)setTimeout(()=>{try{now.scrollIntoView({block:"center",behavior:"smooth"});}catch(e){now.scrollIntoView();}},60);
+  if(pads.est)pads.est.set(0);
+}
 function renderEstUnit(){
   const row=document.getElementById("estUnitRow");
   if(!row)return;
   row.innerHTML='<span class="lb">어림 단위 고르기</span>'+
-    [[1000,"1000원 단위","쉬움"],[500,"500원 단위","조금 어려움"]].map(u=>
-      '<button class="chip '+(estUnit===u[0]?"on":"")+'" onclick="setEstUnit('+u[0]+')">'+u[1]+' · '+u[2]+'</button>').join("");
-  const ex=estUnit===1000
-    ?"예) 2,400원 → 3,000원 · 7,000원 → 7,000원 · 4,200원 → 5,000원"
-    :"예) 2,400원 → 2,500원 · 7,000원 → 7,000원 · 4,200원 → 4,500원";
-  document.getElementById("estGuide").innerHTML=
-    "아래 <b>각 줄의 합계 금액</b>을 <b>"+money(estUnit)+"원 단위로 올림</b>해서 모두 더해 보세요.<br>"+ex;
+    [[1000,"1000원"],[500,"500원"],[100,"100원"],["free","자유"]].map(u=>
+      '<button class="chip '+(estUnit===u[0]?"on":"")+'" onclick="setEstUnit(\''+u[0]+'\')">'+u[1]+'</button>').join("");
+  const g=document.getElementById("estGuide");
+  if(!g)return;
+  if(estUnit==="free"){
+    g.innerHTML="물건을 <b>하나씩 카트에 담으면서</b> 그 물건 값보다 <b>조금 더 많은 돈</b>을 내 보세요.<br>"+
+      (level==="adv"?"10원·100원·500원·1000원":"100원·500원·1000원")+" 단위 중 <b>어느 단위로 올림해도 정답</b>이에요. 예) 2,400원 → 2,500원 또는 3,000원";
+  }else{
+    const ex=estUnit===1000?"예) 2,400원 → 3,000원 · 4,200원 → 5,000원"
+      :estUnit===500?"예) 2,400원 → 2,500원 · 4,200원 → 4,500원"
+      :"예) 2,430원 → 2,500원 · 4,280원 → 4,300원";
+    g.innerHTML="물건을 <b>하나씩 카트에 담으면서</b> 그 물건 값을 <b>"+money(estUnit)+"원 단위로 올림</b>해서 돈을 내 보세요. 낸 돈은 아래에 쌓여요.<br>"+ex;
+  }
 }
 function setEstUnit(u){
-  estUnit=u;sset("mart:estunit",u);renderEstUnit();
-  if(cart.length)setAnswers();
+  estUnit=(u==="free")?"free":+u;sset("mart:estunit",u);renderEstUnit();
+  if(cart.length){setAnswers();initEst();}
   if(pads.est)pads.est.set(0);
 }
 const estAnswer=()=>cart.reduce((s,c)=>s+roundUp(c.price*c.qty),0);
 const costAnswer=()=>cart.reduce((s,c)=>s+c.price*c.qty,0);
 const totalItems=()=>cart.reduce((s,c)=>s+c.qty,0);
-const priceOf=p=>level==="adv"?p.price+((p.id*7)%9+1)*10:p.price;
+const priceOf=p=>level==="adv"?Math.round(p.price/100)*100+((p.id*7)%9+1)*10:Math.round(p.price/100)*100;
 const scannedItems=()=>cart.reduce((s,c)=>s+c.got,0);
 
 const LABEL={name:"이름",mode:"연습 고르기",slot:"물건 뽑기",scan:"바코드 찍기",est:"어림하기",exact:"물건값",change:"거스름돈"};
-const FULLFLOW=["name","mode","slot","scan","est","exact","change"];
+const FULLFLOW=["name","mode","slot","est","scan","exact","change"];
 let flow=FULLFLOW.slice(),queue=[],currentSteps=[],roundNo=0;
 
 /* ── 음성 안내 ── */
@@ -604,6 +742,7 @@ function go(id){
   document.querySelectorAll(".screen").forEach(s=>s.classList.remove("on"));
   document.getElementById("s-"+id).classList.add("on");
   window.scrollTo({top:0,behavior:"smooth"});renderSteps();
+  showCalcDock(id==="exact"||id==="change");
 }
 function renderSteps(){
   const i=flow.indexOf(screen);
@@ -620,10 +759,10 @@ function jumpTo(id){
   const idx=currentSteps.indexOf(id);
   if(idx<0){toast("이 연습에는 없는 단계예요");return;}
   if(id!=="slot"&&!cart.length){toast("먼저 물건을 뽑아 주세요");return;}
-  if(cart.length&&(id==="est"||id==="exact"||id==="change")){
+  if(cart.length&&(id==="exact"||id==="change")){
     if(cart.some(c=>c.got<c.qty)&&currentSteps.includes("scan")){toast("바코드를 모두 찍어야 계산할 수 있어요");return;}
-    setAnswers();
   }
+  if(cart.length)setAnswers();
   queue=currentSteps.slice(idx+1);
   openStep(id);
 }
@@ -647,7 +786,7 @@ function startSession(){
 
 /* ══════════ 연습 모드 ══════════ */
 const MODES=[
- {id:"full",ic:"🛒",tt:"전체 과정",ds:"물건 뽑기 → 바코드 찍기 → 어림하기 → 물건값 → 거스름돈",steps:["slot","scan","est","exact","change"]},
+ {id:"full",ic:"🛒",tt:"전체 과정",ds:"물건 뽑기 → 어림하기 → 바코드 찍기·물건값 → 거스름돈",steps:["slot","est","scan","exact","change"]},
  {id:"calc3",ic:"🧮",tt:"계산 3단계",ds:"바코드 없이 어림하기·물건값·거스름돈만 반복",steps:["est","exact","change"]},
  {id:"est",ic:"🔮",tt:"어림하기만",ds:"1000원 단위로 올림해서 낼 돈 정하기",steps:["est"]},
  {id:"exact",ic:"➕",tt:"물건값 계산만",ds:"계산기로 물건값 더하기",steps:["exact"]},
@@ -719,9 +858,9 @@ function runNext(){
   openStep(st);
 }
 function openStep(st){
-  if(st==="slot"){go("slot");buildReels();speak("물건 뽑기");}
+  if(st==="slot"){go("slot");buildReels();setTimeout(fitReels,60);speak("물건 뽑기");}
   else if(st==="scan"){startScan();speak("바코드 찍기");}
-  else if(st==="est"){renderEstUnit();pads.est.set(0);go("est");speak("어림하여 낼 돈 정하기");}
+  else if(st==="est"){if(cart.length)setAnswers();renderEstUnit();initEst();go("est");speak("어림하여 낼 돈 정하기");}
   else if(st==="exact"){pads.exact.set(0);calcReset();go("exact");speak("물건값 계산하기");}
   else if(st==="change"){pads.change.set(0);calcReset2();go("change");speak("거스름돈 구하기");}
 }
@@ -737,12 +876,32 @@ function renderOpts(){
   document.getElementById("qtyrow").innerHTML='<span class="lb">물건 수량</span>'+
     QTY.map(q=>'<button class="chip '+(q[0]===qtyMode?"on":"")+'" onclick="qtyMode='+q[0]+';renderOpts();buildReels()">'+q[1]+'</button>').join("");
 }
+function fitReels(){
+  const wrap=document.getElementById("reels");
+  if(!wrap)return;
+  const n=slotCount||1,gap=8,pad=16;
+  const W=Math.max(wrap.clientWidth-pad,120), H=Math.max(wrap.clientHeight-pad,110);
+  let best={h:78,w:104};
+  for(let cols=1;cols<=n;cols++){
+    const rows=Math.ceil(n/cols);
+    const cw=Math.floor((W-gap*(cols-1))/cols);
+    const ch=Math.floor((H-gap*(rows-1))/rows);
+    if(cw<80||ch<78)continue;
+    const h=Math.min(ch,152),w=Math.min(cw,170);
+    if(h>best.h||(h===best.h&&w>best.w))best={h,w};
+  }
+  document.documentElement.style.setProperty("--reelH",best.h+"px");
+  document.documentElement.style.setProperty("--reelW",Math.max(88,Math.min(best.w,150))+"px");
+  return best.h;
+}
+window.addEventListener("resize",()=>{if(screen==="slot")fitReels();});
 function buildReels(){
   document.getElementById("reels").innerHTML=Array.from({length:slotCount},()=>{
     const inner=Array.from({length:6},()=>{const p=products[Math.floor(Math.random()*products.length)];
       return '<div class="slotitem">'+thumb(p)+'<div class="nm">'+p.name+'</div></div>'}).join("");
     return '<div class="reel"><div class="strip">'+inner+'</div></div>';}).join("");
   document.getElementById("toScan").style.display="none";
+  setTimeout(fitReels,30);
 }
 function spin(){
   const btn=document.getElementById("spinBtn");btn.disabled=true;btn.classList.add("spinning");btn.textContent="드르르르르르 🎰";
@@ -752,7 +911,7 @@ function spin(){
     return {...p,price:priceOf(p),qty:qtyMode===1?1:1+Math.floor(Math.random()*qtyMode),got:0};
   });
   const reels=[...document.querySelectorAll(".reel")];
-  const H=window.innerWidth<=520?112:132;
+  const H=fitReels()||132;
   reels.forEach((reel,i)=>{
     const t=cart[i],strip=reel.querySelector(".strip");
     const items=Array.from({length:34},()=>{const p=products[Math.floor(Math.random()*products.length)];
@@ -776,14 +935,15 @@ function spin(){
 
 /* ══════════ 스캔 ══════════ */
 function startScan(){
-  cart.forEach(c=>c.got=0);
+  cart.forEach(c=>c.got=0);lastScan=-1;
   renderScan();go("scan");
   document.getElementById("posTime").textContent=new Date().toLocaleTimeString("ko-KR",{hour:"2-digit",minute:"2-digit"});
 }
+let lastScan=-1;
 function renderScan(){
   document.getElementById("scanCards").innerHTML=cart.map((c,i)=>{
     const full=c.got>=c.qty,part=c.got>0&&!full;
-    return '<div class="pcard '+(full?"done":part?"part":"")+'">'+(full?'<div class="ok">✓</div>':"")+
+    return '<div class="pcard '+(full?"done":part?"part":"")+(i===lastScan?" hit":"")+'" id="pc'+i+'">'+(full?'<div class="ok">✓</div>':"")+
       thumb(c)+'<div class="nm">'+c.name+'</div>'+
       '<div class="cnt">'+c.got+' / '+c.qty+'개</div>'+
       '<div class="code">'+c.code+'</div>'+
@@ -799,8 +959,10 @@ function renderScan(){
 function scanIndex(i){
   const c=cart[i];
   if(c.got>=c.qty){stat.scanDup++;toast("이미 다 찍은 물건이에요");return;}
-  c.got++;try{beep();}catch(e){}
+  c.got++;lastScan=i;try{beep();}catch(e){}
   renderScan();
+  const el=document.getElementById("pc"+i);
+  if(el)setTimeout(()=>{try{el.scrollIntoView({block:"nearest",behavior:"smooth"});}catch(e){}},50);
   if(scannedItems()===totalItems())toast("모두 찍었어요! 계산하러 가요");
 }
 function scanCode(code){
@@ -840,10 +1002,11 @@ function makePad(host,valEl,onSubmit,label,moneyOnly,noNum){
   const undoRow='<div class="keypad" style="grid-template-columns:1fr 1fr">'+
     '<button class="key fn" data-k="undo">← 방금 넣은 돈 빼기</button><button class="key fn" data-k="clear">전체 지움</button></div>';
   el.innerHTML=(moneyOnly?'<div style="font-weight:700;font-size:13.5px;color:var(--muted);margin:2px 0 6px">돈 버튼을 눌러 낼 돈을 만들어 보세요</div>':"")+
-    moneyRow+(noNum?"":numRow)+(moneyOnly?undoRow:"")+
     '<div class="billbag" id="'+host+'Bag"></div>'+
-    '<button class="big" data-k="ok">'+label+'</button>';
+    moneyRow+(noNum?"":numRow)+(moneyOnly?undoRow:"")+
+    (label?'<button class="big" data-k="ok">'+label+'</button>':"");
   let v=0,stack=[];
+  const sum=()=>stack.reduce((a,x)=>a+x,0);
   const out=document.getElementById(valEl),bag=document.getElementById(host+"Bag");
   const draw=()=>{
     out.textContent=money(v);
@@ -858,22 +1021,22 @@ function makePad(host,valEl,onSubmit,label,moneyOnly,noNum){
     const bi=e.target.closest(".bagimg");
     if(bi){const i=+bi.dataset.i;v-=stack[i];stack.splice(i,1);draw();return;}
     const b=e.target.closest("button");if(!b)return;
-    const sum=()=>stack.reduce((a,x)=>a+x,0);
     if(b.dataset.v){v+=+b.dataset.v;stack.push(+b.dataset.v);}
     else if(b.dataset.k==="undo"){const last=stack.pop();if(last!==undefined)v-=last;}
     else if(b.dataset.k==="back"){v=Math.floor(v/10);stack=[];}
     else if(b.dataset.k==="clear"){v=0;stack=[];}
-    else if(b.dataset.k==="ok"){
-      if(moneyOnly&&(!stack.length||sum()!==v)){
-        toast("돈 그림 버튼을 눌러 낼 돈을 만들어 주세요");speak("돈 버튼을 눌러 주세요");return;
-      }
-      onSubmit(v);return;
-    }
+    else if(b.dataset.k==="ok"){submit();return;}
     else if(/^\d$/.test(b.dataset.k)){v=Math.min(v*10+ +b.dataset.k,99999999);stack=[];}
     draw();
   };
   draw();
-  return {get:()=>v,set:n=>{v=n;stack=[];draw();}};
+  const submit=()=>{
+    if(moneyOnly&&(!stack.length||sum()!==v)){
+      toast("돈 그림 버튼을 눌러 낼 돈을 만들어 주세요");speak("돈 버튼을 눌러 주세요");return;
+    }
+    onSubmit(v);
+  };
+  return {get:()=>v,set:n=>{v=n;stack=[];draw();},bills:()=>stack.slice(),submit};
 }
 const pads={};
 
@@ -911,16 +1074,31 @@ function hintText(ans,val,n,extra){
 /* ══════════ 단계별 채점 ══════════ */
 function buildPads(){
 pads.est=makePad("estPad","estVal",v=>{
-  const ans=estAnswer();
-  if(v===ans){
-    paid=v;document.getElementById("cgPaid").textContent=money(paid);
-    feedback(true,"정답이에요!",money(v)+"원을 내면 충분해요.","다음으로",runNext);
+  const it=cart[estIdx];
+  if(!it)return;
+  const line=it.price*it.qty;
+  const cands=estCandidates(line);
+  const ok=cands.includes(v);
+  const ans=cands.reduce((a,b)=>Math.abs(b-v)<Math.abs(a-v)?b:a,cands[0]);
+  if(ok){
+    estPaidPer[estIdx]=v;estAcc+=v;estBag=estBag.concat(pads.est.bills());
+    estIdx++;
+    if(estIdx>=cart.length){
+      paid=estAcc;document.getElementById("cgPaid").textContent=money(paid);
+      renderEstStage();
+      feedback(true,"모두 어림했어요!","물건 "+cart.length+"가지를 어림해서 모두 <b>"+money(paid)+"원</b>을 냈어요.","다음으로",runNext);
+    }else{
+      renderEstStage();
+      const u=okUnits().find(x=>v===Math.ceil(line/x)*x);
+      feedback(true,"좋아요!",money(v)+"원을 냈어요"+(estUnit==="free"?" ("+money(u)+"원 단위로 어림)":"")+". 지금까지 낸 돈은 <b>"+money(estAcc)+"원</b>이에요.<br>다음 물건도 어림해 볼까요?","다음 물건");
+    }
   }else{
     stat.estTry++;stat.estGaps.push(v-ans);
     feedback(false,"조금 달라요",money(v)+"원은 정답이 아니에요.","다시 해보기",null,
-      hintText(ans,v,stat.estTry,"각 줄의 <b>합계 금액</b>을 올림해서 더해 보세요. 예) "+cart.slice(0,2).map(c=>money(c.price*c.qty)+"원→"+money(roundUp(c.price*c.qty))+"원").join(", ")));
+      hintText(ans,v,stat.estTry,"<b>"+it.name+"</b>은(는) "+money(line)+"원이에요. "+
+        (estUnit==="free"?okUnits().map(u=>money(u)+"원").join(", ")+" 단위 중 하나로 올림해 보세요.":money(estUnit)+"원 단위로 올림하면 얼마일까요?")));
   }
-},"이 금액을 낼래요 ✓",true,true);
+},"",true,true);
 
 pads.exact=makePad("exactPad","exactVal",v=>{
   const ans=costAnswer();
@@ -972,7 +1150,7 @@ function buildCalc(keysId,dispId){
 }
 const calcOp=(a,b,o)=>o==="+"?a+b:o==="−"?a-b:b;
 const calcReset=buildCalc("cKeys","cDisp");
-const calcReset2=buildCalc("cKeys2","cDisp2");
+const calcReset2=calcReset;
 
 /* ══════════ 평가 문장 생성 ══════════ */
 function buildEval(){
@@ -1064,7 +1242,7 @@ function buildEval(){
   const tm=Math.floor(t/60)+"분 "+(t%60)+"초";
   const det=[];
   if(has("scan"))det.push("바코드 "+totalItems()+"개 중 오류 "+(stat.scanDup+stat.scanUnknown)+"회");
-  if(has("est"))det.push(money(estUnit)+"원 단위 어림 "+(stat.estTry===0?"1회 성공":"재입력 "+stat.estTry+"회"));
+  if(has("est"))det.push((estUnit==="free"?"자유 단위":money(estUnit)+"원 단위")+" 어림 "+(stat.estTry===0?"1회 성공":"재입력 "+stat.estTry+"회"));
   if(has("exact"))det.push("물건값 "+money(cost)+"원 "+(stat.exactTry===0?"1회 성공":"재입력 "+stat.exactTry+"회"));
   if(has("change"))det.push("거스름돈 "+money(paid-cost)+"원 "+(stat.changeTry===0?"1회 성공":"재입력 "+stat.changeTry+"회"));
   if(gaps.length){
@@ -1203,7 +1381,7 @@ async function renderRecords(){
     const d=new Date(r.date);
     return '<div class="rec"><div class="hd"><span>👤 '+r.name+'</span><span class="dt">'+d.toLocaleString("ko-KR")+'</span></div>'+
       '<div class="tx">'+r.text+'</div>'+
-      '<div class="mt">'+(r.mode?'['+r.mode+(r.unit?' · '+r.unit+'원어림':'')+(r.level==='adv'?' · 고급':'')+'] ':'')+'물건 '+r.count+'개 · 물건값 '+money(r.cost)+'원 · 낸 돈 '+money(r.paid)+'원 · 거스름돈 '+money(r.change)+'원 | 재입력 어림'+r.est+'·물건값'+r.exact+'·거스름돈'+r.chg+' | 스캔오류 중복'+r.dup+'·미등록'+r.unk+' | '+r.sec+'초</div>'+
+      '<div class="mt">'+(r.mode?'['+r.mode+(r.unit?' · '+(r.unit==='free'?'자유어림':r.unit+'원어림'):'')+(r.level==='adv'?' · 고급':'')+'] ':'')+'물건 '+r.count+'개 · 물건값 '+money(r.cost)+'원 · 낸 돈 '+money(r.paid)+'원 · 거스름돈 '+money(r.change)+'원 | 재입력 어림'+r.est+'·물건값'+r.exact+'·거스름돈'+r.chg+' | 스캔오류 중복'+r.dup+'·미등록'+r.unk+' | '+r.sec+'초</div>'+
       '<div class="mt">구입: '+r.items+'</div></div>';
   }).join(""):'<div class="empty">저장된 기록이 없습니다.</div>';
 }
@@ -1403,6 +1581,71 @@ function renderScenes(){
   const m={sceneEst:"est",sceneExact:"exact",sceneChange:"change"};
   for(const id in m){const el=document.getElementById(id);if(el)el.innerHTML=sceneSVG(m[id]);}
 }
+/* 계산기 위치 이동 */
+(function dragCalc(){
+  const dock=document.getElementById("calcDock"),tab=document.getElementById("calcTab");
+  if(!dock||!tab)return;
+  let sx=0,sy=0,ox=0,oy=0,moved=false,down=false;
+  const place=(x,y)=>{
+    const r=dock.getBoundingClientRect();
+    x=Math.max(6,Math.min(x,innerWidth-r.width-6));
+    y=Math.max(6,Math.min(y,innerHeight-r.height-6));
+    dock.style.left=x+"px";dock.style.top=y+"px";
+    dock.style.right="auto";dock.style.bottom="auto";
+    sset("mart:calcpos",{x:x,y:y});
+    if(window.placePanel)window.placePanel();
+  };
+  window.placeCalc=place;
+  tab.addEventListener("pointerdown",e=>{
+    down=true;moved=false;
+    const r=dock.getBoundingClientRect();
+    sx=e.clientX;sy=e.clientY;ox=r.left;oy=r.top;
+    dock.classList.add("dragging");
+    tab.setPointerCapture(e.pointerId);
+  });
+  tab.addEventListener("pointermove",e=>{
+    if(!down)return;
+    const dx=e.clientX-sx,dy=e.clientY-sy;
+    if(!moved&&Math.abs(dx)+Math.abs(dy)<6)return;
+    moved=true;place(ox+dx,oy+dy);
+  });
+  const end=e=>{
+    if(!down)return;
+    down=false;dock.classList.remove("dragging");
+    if(moved){e.preventDefault();e.stopPropagation();}
+  };
+  tab.addEventListener("pointerup",end);
+  tab.addEventListener("pointercancel",end);
+  tab.addEventListener("click",e=>{if(moved){e.preventDefault();e.stopImmediatePropagation();moved=false;}},true);
+  window.addEventListener("resize",()=>{
+    if(dock.style.left)place(parseFloat(dock.style.left),parseFloat(dock.style.top));
+    else if(window.placePanel)window.placePanel();
+  });
+})();
+window.placePanel=function(){
+  const dock=document.getElementById("calcDock"),pan=document.getElementById("calcPanel");
+  if(!dock||!pan||!pan.classList.contains("open"))return;
+  const t=dock.getBoundingClientRect(),pw=pan.offsetWidth,ph=pan.offsetHeight,g=10;
+  let x=t.right-pw; if(x<8)x=t.left;
+  x=Math.max(8,Math.min(x,innerWidth-pw-8));
+  let y=t.top-ph-g;
+  if(y<8)y=t.bottom+g;
+  y=Math.max(8,Math.min(y,innerHeight-ph-8));
+  pan.style.left=x+"px";pan.style.top=y+"px";
+};
+function toggleCalc(){
+  const pan=document.getElementById("calcPanel"),tab=document.getElementById("calcTab");
+  const open=!pan.classList.contains("open");
+  pan.classList.toggle("open",open);
+  tab.classList.toggle("on",open);
+  if(open){pan.style.left="-9999px";requestAnimationFrame(window.placePanel);}
+}
+function showCalcDock(on){
+  const d=document.getElementById("calcDock"),pan=document.getElementById("calcPanel");
+  if(on){d.removeAttribute("hidden");}
+  else{d.setAttribute("hidden","");pan.classList.remove("open");
+    document.getElementById("calcTab").classList.remove("on");}
+}
 function renderAll(){renderOpts();buildReels();renderPrint();renderSteps();renderScenes();}
 function restart(){
   closeRound();
@@ -1419,8 +1662,10 @@ function restart(){
   if(saved&&saved.length)products=saved;
   const p=await sget("mart:pin");if(p)PIN=p;
   const v=await sget("mart:voice");if(v===false){voiceOn=false;document.getElementById("vBtn").textContent="🔇 음성";}
+  const cp=await sget("mart:calcpos");
+  if(cp&&window.placeCalc){const d=document.getElementById("calcDock");d.removeAttribute("hidden");window.placeCalc(cp.x,cp.y);d.setAttribute("hidden","");}
   const lv=await sget("mart:level");if(lv==="adv"){level="adv";BILLS=BILLS_ADV;buildPads();}
-  const eu=await sget("mart:estunit");if(eu===500||eu===1000)estUnit=eu;
+  const eu=await sget("mart:estunit");if(eu==="free"||eu===100||eu===500||eu===1000)estUnit=eu;
   renderEstUnit();
   renderAll();renderRecent();go("name");
 })();
