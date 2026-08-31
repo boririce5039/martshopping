@@ -141,9 +141,14 @@ h1,h2,h3,.display{font-family:var(--display);font-weight:400;letter-spacing:-.01
 .key{background:#fff;border:2px solid var(--line);border-radius:12px;padding:clamp(12px,3.4vw,15px);font-size:clamp(17px,4.6vw,20px);font-weight:700;font-family:var(--mono)}
 .key:active{background:var(--yellow)}
 .key.fn{background:#F0F5F9;font-size:14px;font-family:var(--body)}
-.billbag{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;min-height:32px}
-.bagit{background:#EAF3FA;border:2px solid var(--line);border-radius:999px;padding:5px 11px;font-family:var(--mono);font-size:12.5px;font-weight:700;color:var(--navy)}
-.bagit.empty2{background:transparent;border-style:dashed;color:var(--muted);font-weight:400}
+.billbag{display:flex;flex-wrap:wrap;gap:5px;align-items:center;margin-top:8px;min-height:46px;
+  background:#F4F9FC;border:2px dashed var(--line);border-radius:12px;padding:7px}
+.bagimg{height:26px;width:auto;border-radius:3px;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .1s}
+.bagimg:hover{transform:translateY(-2px)}
+.bagimg.coin{height:26px;border-radius:50%}
+.bagcnt{margin-left:auto;font-family:var(--mono);font-size:13px;font-weight:700;color:var(--navy);
+  background:#fff;border:2px solid var(--line);border-radius:999px;padding:3px 10px}
+.bagempty{color:var(--muted);font-size:12.5px}
 .hintbox{background:#FFF7DF;border:2px solid var(--yellow);border-radius:14px;padding:11px 13px;margin-top:11px;font-size:13.5px;line-height:1.7}
 
 /* 거스름돈 식 */
@@ -153,6 +158,8 @@ h1,h2,h3,.display{font-family:var(--display);font-weight:400;letter-spacing:-.01
 
 /* 계산기 */
 .calc{background:#20313B;border-radius:18px;padding:12px;color:#fff}
+.calc .hist{font-family:var(--mono);font-size:12.5px;color:#9FC0D6;text-align:right;
+  padding:0 4px 5px;min-height:18px;word-break:break-all}
 .calc .disp{background:#C8E6C9;color:#12242F;border-radius:10px;padding:12px;text-align:right;font-family:var(--mono);font-size:clamp(22px,6vw,28px);min-height:56px;word-break:break-all;border:3px solid #0F1D24}
 .calc .keys{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:9px}
 .calc button{background:#3B4E5A;color:#fff;border-radius:10px;padding:13px 0;font-size:17px;font-family:var(--mono);font-weight:700}
@@ -414,9 +421,16 @@ canvas#fw{position:fixed;inset:0;pointer-events:none;z-index:90;display:none}
     <input id="nPrice" placeholder="가격 (숫자만)" inputmode="numeric">
     <input id="nEmoji" placeholder="그림 이모지 (예: 🍎)">
     <label class="filebtn" style="display:grid;place-items:center">사진 올리기<input type="file" accept="image/*" id="nFile" hidden></label>
+    <button class="filebtn" id="pasteNew" onclick="setPaste('new')">📋 여기에 붙여넣기</button>
     <button class="tbtn" style="background:var(--green)" onclick="addProduct()">＋ 상품 추가</button>
   </div>
-  <div style="height:10px"></div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:12px">
+    <input id="pSearch" placeholder="🔍 상품 이름으로 찾기" oninput="renderAdmin()"
+      style="flex:1;min-width:160px;border:2px solid var(--line);border-radius:10px;padding:10px;font-size:14px;font-family:var(--body)">
+    <button class="ghost" onclick="exportProducts()">설정 내보내기</button>
+    <label class="ghost" style="cursor:pointer">설정 불러오기<input type="file" accept=".json,application/json" hidden onchange="importProducts(event)"></label>
+  </div>
+  <div style="font-size:12px;color:var(--muted);margin:8px 2px">📋 사진은 <b>복사한 이미지를 Ctrl+V</b>로 붙여넣을 수도 있어요. 붙여넣을 자리의 <b>📋</b> 버튼을 먼저 누르세요.</div>
   <div class="adminlist" id="adminList"></div>
   <div class="btnrow" style="display:flex;gap:8px;margin-top:12px">
     <button style="flex:1;padding:14px;border-radius:14px;background:var(--red);color:#fff;font-family:var(--display);font-size:16px" onclick="resetProducts()">기본값 복원</button>
@@ -815,11 +829,14 @@ function makePad(host,valEl,onSubmit,label,moneyOnly,noNum){
   const out=document.getElementById(valEl),bag=document.getElementById(host+"Bag");
   const draw=()=>{
     out.textContent=money(v);
-    if(!moneyOnly)return;
-    const cnt={};stack.forEach(x=>cnt[x]=(cnt[x]||0)+1);
-    bag.innerHTML=stack.length?BILLS.filter(b=>cnt[b]).map(b=>'<span class="bagit">'+money(b)+'원 × '+cnt[b]+'</span>').join(""):'<span class="bagit empty2">아직 넣은 돈이 없어요</span>';
+    if(!moneyOnly||!bag)return;
+    if(!stack.length){bag.innerHTML='<span class="bagempty">돈 버튼을 눌러 담아 보세요 (담은 돈을 누르면 빼져요)</span>';return;}
+    bag.innerHTML=stack.map((b,i)=>'<img class="bagimg'+(b<=500?" coin":"")+'" src="'+MONEY_IMG[b]+'" data-i="'+i+'" alt="'+money(b)+'원" title="누르면 빼기">').join("")+
+      '<span class="bagcnt">'+stack.length+'장</span>';
   };
   el.onclick=e=>{
+    const bi=e.target.closest(".bagimg");
+    if(bi){const i=+bi.dataset.i;v-=stack[i];stack.splice(i,1);draw();return;}
     const b=e.target.closest("button");if(!b)return;
     const sum=()=>stack.reduce((a,x)=>a+x,0);
     if(b.dataset.v){v+=+b.dataset.v;stack.push(+b.dataset.v);}
@@ -913,19 +930,25 @@ buildPads();
 function buildCalc(keysId,dispId){
   const keys=["7","8","9","C","4","5","6","+","1","2","3","−","0","00","=","⌫"];
   const el=document.getElementById(keysId),d=document.getElementById(dispId);
-  let cur="0",acc=null,op=null;
-  const show=()=>d.textContent=(+cur).toLocaleString("ko-KR");
+  if(!document.getElementById(dispId+"H"))d.insertAdjacentHTML("beforebegin",'<div class="hist" id="'+dispId+'H"></div>');
+  const h=document.getElementById(dispId+"H");
+  let cur="0",acc=null,op=null,hist="";
+  const showH=()=>h.textContent=hist||"\u00a0";
+  const show=()=>{d.textContent=(+cur).toLocaleString("ko-KR");showH();};
   el.innerHTML=keys.map(k=>'<button class="'+(k==="C"?"cl":k==="="?"eqk":/[+−⌫]/.test(k)?"op":"")+'" data-k="'+k+'">'+k+'</button>').join("");
   el.onclick=e=>{
     const b=e.target.closest("button");if(!b)return;const k=b.dataset.k;
     if(/^\d+$/.test(k))cur=(cur==="0"?"":cur)+k;
-    else if(k==="C"){cur="0";acc=null;op=null;}
+    else if(k==="C"){cur="0";acc=null;op=null;hist="";}
     else if(k==="⌫")cur=cur.length>1?cur.slice(0,-1):"0";
-    else if(k==="+"||k==="−"){acc=acc===null?+cur:calcOp(acc,+cur,op);op=k;cur="0";d.textContent=acc.toLocaleString("ko-KR");return;}
-    else if(k==="="){if(op!==null){cur=String(calcOp(acc,+cur,op));acc=null;op=null;}}
+    else if(k==="+"||k==="−"){
+      acc=acc===null?+cur:calcOp(acc,+cur,op);
+      hist+=(+cur).toLocaleString("ko-KR")+" "+k+" ";op=k;cur="0";
+      d.textContent=acc.toLocaleString("ko-KR");showH();return;}
+    else if(k==="="){if(op!==null){hist+=(+cur).toLocaleString("ko-KR")+" = ";cur=String(calcOp(acc,+cur,op));acc=null;op=null;}}
     show();
   };
-  return ()=>{cur="0";acc=null;op=null;show();};
+  return ()=>{cur="0";acc=null;op=null;hist="";show();};
 }
 const calcOp=(a,b,o)=>o==="+"?a+b:o==="−"?a-b:b;
 const calcReset=buildCalc("cKeys","cDisp");
@@ -1233,16 +1256,71 @@ async function clearRecords(){
 }
 
 /* ══════════ 상품 관리 ══════════ */
-function openAdmin(){renderAdmin();document.getElementById("adminMask").classList.add("on");}
+function openAdmin(){pasteTarget="new";renderAdmin();document.getElementById("adminMask").classList.add("on");}
 function closeAdmin(){document.getElementById("adminMask").classList.remove("on");save();renderAll();}
+let pasteTarget="new";
+function setPaste(t){pasteTarget=t;renderAdmin();toast("이제 Ctrl+V로 사진을 붙여넣으세요");}
 function renderAdmin(){
-  document.getElementById("adminList").innerHTML=products.map((p,i)=>
-    '<div class="arow">'+(p.img?'<img src="'+p.img+'">':'<span class="em">'+p.emoji+'</span>')+
+  const q=(document.getElementById("pSearch")?.value||"").trim();
+  const list=products.map((p,i)=>[p,i]).filter(([p])=>!q||p.name.includes(q));
+  document.getElementById("adminList").innerHTML=list.length?list.map(([p,i])=>
+    '<div class="arow" style="'+(pasteTarget===i?"border-color:var(--yellow);background:#FFFCF2":"")+'">'+
+    (p.img?'<img src="'+p.img+'">':'<span class="em">'+p.emoji+'</span>')+
     '<div style="flex:1;display:grid;gap:4px">'+
     '<input value="'+p.name.replace(/"/g,"&quot;")+'" onchange="products['+i+'].name=this.value;save()">'+
     '<input value="'+p.price+'" inputmode="numeric" onchange="products['+i+'].price=Math.max(0,parseInt(this.value)||0);save();renderAdmin()">'+
-    '<label class="filebtn">사진 바꾸기<input type="file" accept="image/*" hidden onchange="pickImg(event,'+i+')"></label></div>'+
-    '<button class="del" onclick="products.splice('+i+',1);save();renderAdmin()">삭제</button></div>').join("");
+    '<div style="display:flex;gap:4px">'+
+    '<label class="filebtn" style="flex:1">사진 바꾸기<input type="file" accept="image/*" hidden onchange="pickImg(event,'+i+')"></label>'+
+    '<button class="filebtn" onclick="setPaste('+i+')" title="여기에 붙여넣기">📋</button></div></div>'+
+    '<button class="del" onclick="products.splice('+i+',1);save();renderAdmin()">삭제</button></div>').join("")
+    :'<div class="empty">찾는 상품이 없어요</div>';
+  const pn=document.getElementById("pasteNew");
+  if(pn)pn.style.background=pasteTarget==="new"?"#FFF3C4":"#F0F5F9";
+}
+/* 이미지 붙여넣기 */
+document.addEventListener("paste",e=>{
+  if(!document.getElementById("adminMask").classList.contains("on"))return;
+  const items=(e.clipboardData||{}).items||[];
+  for(const it of items){
+    if(it.type&&it.type.indexOf("image")===0){
+      const f=it.getAsFile();if(!f)continue;
+      const r=new FileReader();
+      r.onload=()=>{
+        if(pasteTarget==="new"){newImg=r.result;toast("새 상품 사진으로 붙여넣었어요");}
+        else{products[pasteTarget].img=r.result;save();renderAll();toast("사진을 붙여넣었어요");}
+        renderAdmin();
+      };
+      r.readAsDataURL(f);e.preventDefault();return;
+    }
+  }
+  toast("복사한 이미지가 없어요");
+});
+/* 상품 설정 내보내기 / 불러오기 */
+async function exportProducts(){
+  const j=JSON.stringify({type:"mart-products",saved:new Date().toISOString(),level:level,estUnit:estUnit,products:products},null,1);
+  csvCache=j;
+  document.getElementById("csvText").value=j;
+  document.getElementById("csvMask").classList.add("on");
+  try{
+    const a=document.createElement("a");
+    a.href="data:application/json;charset=utf-8,"+encodeURIComponent(j);
+    a.download="마트계산_상품설정_"+new Date().toISOString().slice(0,10)+".json";
+    document.body.appendChild(a);a.click();a.remove();
+  }catch(e){}
+}
+function importProducts(e){
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=()=>{
+    try{
+      const d=JSON.parse(r.result);
+      const arr=Array.isArray(d)?d:(d.products||[]);
+      if(!arr.length){toast("불러올 상품이 없어요");return;}
+      products=arr;save();renderAdmin();renderAll();
+      toast(arr.length+"개 상품을 불러왔어요");
+    }catch(err){toast("설정 파일을 읽을 수 없어요");}
+  };
+  r.readAsText(f);e.target.value="";
 }
 function pickImg(e,i){
   const f=e.target.files[0];if(!f)return;
