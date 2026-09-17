@@ -43,7 +43,7 @@ h1,h2,h3,.display{font-family:var(--display);font-weight:400;letter-spacing:-.01
 .screen{display:none}
 .screen.on{display:block;animation:fade .3s}
 @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media (prefers-reduced-motion:reduce){.bulb,.laser::after,.big.spinning,.pcard.hit{animation:none!important}}
 
 .card{background:#fff;border:2px solid var(--line);border-radius:18px;padding:clamp(14px,3vw,20px)}
 .title{font-size:clamp(21px,5vw,27px);margin:0 0 6px}
@@ -112,6 +112,9 @@ h1,h2,h3,.display{font-family:var(--display);font-weight:400;letter-spacing:-.01
 .pcard img{width:48px;height:48px;object-fit:cover;border-radius:8px}
 .pcard .nm{font-size:13px;font-weight:700;margin-top:3px;line-height:1.25}
 .pcard .cnt{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--navy);margin-top:2px}
+.pcard .barline{background:#fff;padding:3px 4px 1px;border-radius:4px;margin-top:5px}
+.pcard .barline svg{width:100%;height:38px;display:block;shape-rendering:crispEdges}
+@media(max-height:820px) and (min-width:701px){.pcard .barline svg{height:30px}}
 .pcard .code{font-family:var(--mono);font-size:9.5px;color:var(--muted)}
 .pcard .tap{margin-top:6px;width:100%;background:var(--navy);color:#fff;border-radius:9px;padding:7px;font-size:12px;font-weight:700}
 .pcard .tap:disabled{background:#B9C8D2}
@@ -940,7 +943,7 @@ function spin(){
     return {...p,price:priceOf(p),qty:qtyMode===1?1:1+Math.floor(Math.random()*qtyMode),got:0};
   });
   const reels=[...document.querySelectorAll(".reel")];
-  const H=fitReels()||132;
+  fitReels();
   reels.forEach((reel,i)=>{
     const t=cart[i],strip=reel.querySelector(".strip");
     const items=Array.from({length:34},()=>{const p=products[Math.floor(Math.random()*products.length)];
@@ -949,6 +952,7 @@ function spin(){
     strip.innerHTML=items.join("");
     strip.style.transition="none";strip.style.transform="translateY(0)";
     void strip.offsetHeight;
+    const H=(strip.firstElementChild&&strip.firstElementChild.offsetHeight)||reel.clientHeight||132;
     const dur=2.2+i*0.4;
     strip.style.filter="blur(1.4px)";
     strip.style.transition="transform "+dur+"s cubic-bezier(.12,.62,.18,1)";
@@ -975,6 +979,7 @@ function renderScan(){
     return '<div class="pcard '+(full?"done":part?"part":"")+(i===lastScan?" hit":"")+'" id="pc'+i+'">'+(full?'<div class="ok">✓</div>':"")+
       thumb(c)+'<div class="nm">'+c.name+'</div>'+
       '<div class="cnt">'+c.got+' / '+c.qty+'개</div>'+
+      '<div class="barline">'+barcodeSVG(c.code)+'</div>'+
       '<div class="code">'+c.code+'</div>'+
       '<button class="tap" onclick="scanIndex('+i+')" '+(full?"disabled":"")+'>'+(full?"스캔 완료":"카드 찍기")+'</button></div>';
   }).join("");
@@ -994,19 +999,40 @@ function scanIndex(i){
   if(el)setTimeout(()=>{try{el.scrollIntoView({block:"nearest",behavior:"smooth"});}catch(e){}},50);
   if(scannedItems()===totalItems())toast("모두 찍었어요! 계산하러 가요");
 }
-function scanCode(code){
-  const i=cart.findIndex(c=>c.code===code&&c.got<c.qty);
-  if(i>=0)scanIndex(i);
-  else if(cart.some(c=>c.code===code)){stat.scanDup++;toast("이미 다 찍은 물건이에요");}
-  else{stat.scanUnknown++;toast("장바구니에 없는 바코드예요");}
+const normCode=c=>String(c).replace(/\D/g,"");
+function sameCode(a,b){
+  a=normCode(a);b=normCode(b);
+  if(!a||!b)return false;
+  if(a===b)return true;
+  if(a.slice(-12)===b.slice(-12))return true;          /* 선행 0 차이 */
+  if(a===b.slice(0,12)||b===a.slice(0,12))return true; /* 체크디짓 누락 */
+  return false;
 }
-let buf="",bufT=0;
+function scanCode(code){
+  const i=cart.findIndex(c=>sameCode(c.code,code)&&c.got<c.qty);
+  if(i>=0)scanIndex(i);
+  else if(cart.some(c=>sameCode(c.code,code))){stat.scanDup++;toast("이미 다 찍은 물건이에요");}
+  else{stat.scanUnknown++;toast("읽은 번호 "+code+" — 장바구니에 없는 바코드예요");}
+}
+let buf="",bufT=0,bufTimer=null;
+function flushBuf(){
+  clearTimeout(bufTimer);bufTimer=null;
+  const code=buf;buf="";
+  if(code.length>=8)scanCode(code);
+}
 document.addEventListener("keydown",e=>{
   if(screen!=="scan")return;
   const t=e.target.tagName;if(t==="INPUT"||t==="TEXTAREA")return;
-  const now=Date.now();if(now-bufT>150)buf="";bufT=now;
-  if(/^[0-9]$/.test(e.key))buf+=e.key;
-  else if(e.key==="Enter"&&buf.length>=8){scanCode(buf);buf="";}
+  const now=Date.now();
+  if(now-bufT>900)buf="";
+  bufT=now;
+  if(/^[0-9]$/.test(e.key)){
+    buf+=e.key;
+    clearTimeout(bufTimer);
+    bufTimer=setTimeout(flushBuf,250);   /* 엔터가 없어도 자동 인식 */
+  }else if(e.key==="Enter"||e.key==="Tab"||e.key==="NumpadEnter"){
+    if(buf.length>=8){e.preventDefault();flushBuf();}
+  }
 });
 function beep(){
   const c=beep.ctx||(beep.ctx=new (window.AudioContext||window.webkitAudioContext)());
@@ -1127,7 +1153,7 @@ pads.est=makePad("estPad","estVal",v=>{
       hintText(ans,v,stat.estTry,"<b>"+it.name+"</b>은(는) "+money(line)+"원이에요. "+
         (estUnit==="free"?okUnits().map(u=>money(u)+"원").join(", ")+" 단위 중 하나로 올림해 보세요.":money(estUnit)+"원 단위로 올림하면 얼마일까요?")));
   }
-},"",true,true);
+},"✓ 어림하기 완료",true,true);
 
 pads.exact=makePad("exactPad","exactVal",v=>{
   const ans=costAnswer();
